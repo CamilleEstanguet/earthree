@@ -60,7 +60,7 @@ function onPointerMove( event ) {
         fragmentShader,
         uniforms: {
           globeTexture: {
-            value: new THREE.TextureLoader().load('./textures/globe.jpg')
+            value: new THREE.TextureLoader().load('./textures/texxtur.png')
           }
         }
       })
