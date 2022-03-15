@@ -40,15 +40,7 @@ const mouse = {
   xPrev: undefined,
   yPrev: undefined
   }
-const raycaster = new THREE.Raycaster()
-const pointer = new THREE.Vector2()
-
-function onPointerMove( event ) {
-
-  pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-  pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-}
+  const raycaster = new THREE.Raycaster()
 
 ///============================================================THREEJS SCENE=======================================================================================///
 
@@ -88,11 +80,14 @@ const group = new THREE.Group()
 const points = new THREE.Group()
 
 //Create point
-function createPoint(lat, long){
+function createPoint(name, lat, long){
+  const nameArt = name
   const point = new THREE.Mesh(
     new THREE.BoxGeometry(0.1, 0.1, 0.4),
     new THREE.MeshBasicMaterial({
-      color: '#ff5500'
+      color: '#ff5500',
+      opacity: 0.8,
+      transparent: true
     })
   )
 
@@ -114,33 +109,37 @@ points.add(point)
 }
 
 //Creating the points needed
-createPoint(48.873792, 2.295028)
-createPoint(43.1833, -0.55)
-createPoint(58.249500, 8.377200)
-createPoint(52.2333, 9.2)
+createPoint("arcDeTriomphe", 48.873792, 2.295028)
+createPoint("fish", 58.249500, 8.377200) 
+createPoint("eisvirus",52.2333, 9.2) 
+createPoint("levitatedMass", 34, -117.483330)
+createPoint("sunTunnels", 40.666667, -117.483330)
+createPoint("tibesti", 20.78, 18.05)
+createPoint("bunjilGeoglyph", -37.0201, 144.9646)
 
 //Adding The Earth and the Points to the group and the scene
   group.add(sphere)
 group.add(points)
   scene.add(group)
   scene.add(atmos)
+  console.log(points.children)
 
 ///======================================================================ANIMATION=============================================================///
 
   // Draw the scene every time the screen is refreshed
 function animate() {
-requestAnimationFrame(animate);
-renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
   group.rotation.y += 0.001
-raycaster.setFromCamera( pointer, camera )
-const intersects = raycaster.intersectObjects( scene.children )
-//console.log(intersects)
 
-for ( let i = 0; i < intersects.length; i ++ ) {
+  // update the picking ray with the camera and mouse position
+  raycaster.setFromCamera(mouse, camera)
 
-  //intersects[i].object.material.color.set(0xff0000)
+  const intersects = raycaster.intersectObjects(points.children)
 
-}
+  for(let i = 0; i < intersects.length; i++){
+    console.log(intersects[i])
+  }
 }
 
 function onWindowResize() {
@@ -168,6 +167,7 @@ mouse.down = false
 })
 
 addEventListener('mousemove', (event) => {
+  //console.log(event)
   mouse.x = (event.clientX / innerWidth) * 2 - 1
   mouse.y = (event.clientY / innerHeight) * 2 - 1
 
