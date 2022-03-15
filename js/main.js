@@ -83,11 +83,12 @@ const points = new THREE.Group()
 function createPoint(name, lat, long){
   const nameArt = name
   const point = new THREE.Mesh(
-    new THREE.BoxGeometry(0.1, 0.1, 0.4),
+    new THREE.OctahedronGeometry(0.3, 0),
     new THREE.MeshBasicMaterial({
-      color: '#ff5500',
+      //color: '#ff5500',
+      map: new THREE.TextureLoader().load('textures/red-paper-texture.jpg'),
       opacity: 0.8,
-      transparent: true
+      transparent: false,
     })
   )
 
@@ -103,7 +104,7 @@ point.position.z = z
 
 point.lookAt(0, 0, 0)
 
-point.geometry.applyMatrix4( new THREE.Matrix4().makeTranslation(0, 0, -0.2))
+point.geometry.applyMatrix4( new THREE.Matrix4().makeTranslation(0, 0, -0.25))
 
 points.add(point)
 }
@@ -118,12 +119,11 @@ createPoint("tibesti", 20.78, 18.05)
 createPoint("bunjilGeoglyph", -37.0201, 144.9646)
 
 //Adding The Earth and the Points to the group and the scene
-  group.add(sphere)
+group.add(sphere)
 group.add(points)
-  scene.add(group)
-  scene.add(atmos)
-  console.log(points.children)
-
+scene.add(group)
+scene.add(atmos)
+console.log(points.children)
 ///======================================================================ANIMATION=============================================================///
 
   // Draw the scene every time the screen is refreshed
