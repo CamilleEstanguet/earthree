@@ -10,6 +10,28 @@ let camera, scene, renderer;
 const canvasContainer = document.querySelector('#canvasContainer')
 console.log(canvasContainer)
 
+const vertexShaderPoint = `
+  varying vec2 vertexUV;
+  varying vec3 vertexNormal;
+  void main() {
+    vertexUV = uv;
+    vertexNormal = normalize(normalMatrix * normal);
+    
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0);
+  }
+`
+const fragmentShaderPoint = `
+  uniform sampler2D globeTexture;
+  varying vec2 vertexUV; // [0, 0.24]
+  varying vec3 vertexNormal;
+  void main() {
+    float intensity = 1.15 - dot(vertexNormal, vec3(0.0, 0.0, 2.0 ));
+    vec3 atmosphere = vec3(1.0, 0.3, 0.2) * pow(intensity, 1.0);
+    
+    gl_FragColor = vec4(atmosphere + texture2D(globeTexture, vertexUV).xyz, 0.5); 
+  }
+`
+
 ///==========================================================INIT THREEJS SCENE========================================================================================///
 scene = new THREE.Scene();
 
@@ -84,16 +106,25 @@ const group = new THREE.Group()
 const points = new THREE.Group()
 
 //Create point
-function createPoint(id, lat, long){
+function createPoint(id, lat, long, aDebut, aFin){
   const point = new THREE.Mesh(
     new THREE.BoxGeometry(0.1, 0.1, 0.4),
+    new THREE.ShaderMaterial({
+      vertexShader: vertexShaderPoint,
+      fragmentShader: fragmentShaderPoint
+    })
+    /*
     new THREE.MeshBasicMaterial({
       color: '#ff5500',
       opacity: 0.4,
+      visible: true,
       transparent: true
     })
+    */
   )
   point.idArt = id
+  point.Annee = aDebut 
+  point.AnneeFin = aFin
 
 const latitude = (lat / 180) * Math.PI
 const longitude = (long / 180) * Math.PI
@@ -113,19 +144,19 @@ points.add(point)
 }
 
 //Creating the points needed
-createPoint("Arc de Triomphe Wrapped", 48.873792, 2.295028)
-createPoint("Fish", 58.249500, 8.377200) 
-createPoint("Eisvirus",52.2333, 9.2) 
-createPoint("Levitated Mass", 34, -117.483330)
-createPoint("Sun Tunnels", 40.666667, -117.483330)
-createPoint("Tibesti", 20.78, 18.05)
-createPoint("Bunjil Geoglyph", -37.0201, 144.9646)
-createPoint("Wave Field", 39.588367, -107.399762)
-createPoint("Bobur",54.75130313568798, 35.60068707061457)
+createPoint("Arc de Triomphe Wrapped", 48.873792, 2.295028, 2021, 2021)
+createPoint("Fish", 58.249500, 8.377200, 1997, 1997) 
+createPoint("Eisvirus",52.2333, 9.2, 2016, 2016) 
+createPoint("Levitated Mass", 34, -117.483330, 2011, 2012)
+createPoint("Sun Tunnels", 40.666667, -117.483330, 1973, 2022)
+createPoint("Tibesti", 20.78, 18.05, 1989, 2022)
+createPoint("Bunjil Geoglyph", -37.0201, 144.9646, 2006, 2022)
+createPoint("Wave Field", 39.588367, -107.399762, 1995, 2022)
+createPoint("Bobur",54.75130313568798, 35.60068707061457, 2018, 2022)
 
 //Adding The Earth and the Points to the group and the scene
   group.add(sphere)
-group.add(points)
+  group.add(points)
   scene.add(group)
   scene.add(atmos)
   console.log(points.children)
@@ -143,9 +174,22 @@ function animate() {
 
   const intersects = raycaster.intersectObjects(points.children)
 
+  /*
   points.children.forEach((mesh) => {
     mesh.material.opacity = 0.4
   })
+  */
+
+
+  /*
+  points.children.forEach((mesh) => {
+    if(!(localStorage.getItem("anneeVoulue") >= mesh.Annee && localStorage.getItem("anneeVoulue") <= mesh.AnneeFin)){
+      mesh.visible = false
+    } else {
+      mesh.visible = true
+    }
+  })
+  */
 
   for(let i = 0; i < intersects.length; i++){
     const point = intersects[i].object
@@ -155,9 +199,10 @@ function animate() {
       const nomOeuvreVoulue = point.idArt
       localStorage.setItem("nomOeuvreVoulue", nomOeuvreVoulue)
       //console.log("CHANGEMENT DE PAGE")
-      window.location.href = "./page-oeuvres.html"
+      //window.location.href = "./page-oeuvres.html"
     }
   }
+
 }
 
 function onWindowResize() {
