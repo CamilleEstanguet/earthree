@@ -84,8 +84,7 @@ const group = new THREE.Group()
 const points = new THREE.Group()
 
 //Create point
-function createPoint(name, lat, long){
-  const nameArt = name
+function createPoint(id, lat, long){
   const point = new THREE.Mesh(
     new THREE.BoxGeometry(0.1, 0.1, 0.4),
     new THREE.MeshBasicMaterial({
@@ -94,6 +93,7 @@ function createPoint(name, lat, long){
       transparent: true
     })
   )
+  point.idArt = id
 
 const latitude = (lat / 180) * Math.PI
 const longitude = (long / 180) * Math.PI
@@ -113,13 +113,15 @@ points.add(point)
 }
 
 //Creating the points needed
-createPoint("arcDeTriomphe", 48.873792, 2.295028)
-createPoint("fish", 58.249500, 8.377200) 
-createPoint("eisvirus",52.2333, 9.2) 
-createPoint("levitatedMass", 34, -117.483330)
-createPoint("sunTunnels", 40.666667, -117.483330)
-createPoint("tibesti", 20.78, 18.05)
-createPoint("bunjilGeoglyph", -37.0201, 144.9646)
+createPoint("Arc de Triomphe Wrapped", 48.873792, 2.295028)
+createPoint("Fish", 58.249500, 8.377200) 
+createPoint("Eisvirus",52.2333, 9.2) 
+createPoint("Levitated Mass", 34, -117.483330)
+createPoint("Sun Tunnels", 40.666667, -117.483330)
+createPoint("Tibesti", 20.78, 18.05)
+createPoint("Bunjil Geoglyph", -37.0201, 144.9646)
+createPoint("Wave Field", 39.588367, -107.399762)
+createPoint("Bobur",54.75130313568798, 35.60068707061457)
 
 //Adding The Earth and the Points to the group and the scene
   group.add(sphere)
@@ -141,9 +143,20 @@ function animate() {
 
   const intersects = raycaster.intersectObjects(points.children)
 
+  points.children.forEach((mesh) => {
+    mesh.material.opacity = 0.4
+  })
+
   for(let i = 0; i < intersects.length; i++){
     const point = intersects[i].object
     point.material.opacity = 1.0
+    //console.log(point.idArt)
+    if(mouse.down){
+      const nomOeuvreVoulue = point.idArt
+      localStorage.setItem("nomOeuvreVoulue", nomOeuvreVoulue)
+      //console.log("CHANGEMENT DE PAGE")
+      window.location.href = "./page-oeuvres.html"
+    }
   }
 }
 
@@ -184,6 +197,5 @@ if(mouse.down) {
   group.rotation.x += deltaY *0.002
   mouse.xPrev = event.clientX
   mouse.yPrev = event.clientY
-  
 }
 })
