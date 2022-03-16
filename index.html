@@ -2,7 +2,7 @@
 <html lang="fr">
 
 <head>
-    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    
     <title>Wartpped1</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,30 +10,6 @@
 
     <link href="style.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="media/favicon.png" />
-    <audio id="laudio" src="media/space-ambience.mp3" loop></audio>
-    <script> 
-        function changerSon(son){
-            var leSon = document.getElementById(son).className;
-            var audio = document.getElementById('laudio');
-            if(leSon=="fas fa-volume-mute soundOff"){
-                leSon = "fas fa-volume-up soundOn";
-                document.getElementById("laudio").play();
-                audio.muted = false;
-            }else{
-                leSon = "fas fa-volume-mute soundOff";
-                audio.muted = true;
-            }
-            document.getElementById(son).className = leSon;
-        }
-        function changerIconesMenu(burger){
-            var buttun = document.getElementById("burgerButtun").textContent;
-            if(buttun=="☰"){
-                document.getElementById("burgerButtun").textContent = "✖";
-            }else{
-                document.getElementById("burgerButtun").textContent = "☰";
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -61,22 +37,19 @@
             }
         </script>
     </div>
-    <label id="burgerButtun" class="box-icons" for="toggle" onclick="changerIconesMenu(burgerButtun)">☰</label>
-    <input type="checkbox" id="toggle">
-    <ul class="menu">
-        <li><a href="">L'art in situ</a></li>
-        <li><a href="">Le land art</a></li>
-        <li><a href="">L'origine</a></li>
-        <li><a href="contact.html">Contact</a></li>
-    </ul>
+    
     <i id="toggleSlider" class="fas fa-chevron-up chevronUp" onclick="showRange()"></i>
     <i id="hideSlider" class="fas fa-chevron-down chevronDown" onclick="hideRange()"></i>
     <i id="toggleSliderResponsive" class="fa fa-chevron-right chevronRight" onclick="showRangeResponsive()"></i>
     <i id="hideSliderResponsive" class="fa fa-chevron-left chevronLeft" onclick="hideRangeResponsive()"></i>
-    <script src="js/three.js"></script>
+
+    <div id="canvasContainer">
+        <canvas></canvas>
+    </div>
     <script type="module" src="js/main.js"></script>                                
     <script>
         let slider = document.getElementById("range");
+        console.log(slider)
         let up = document.getElementById("toggleSlider");
         let down = document.getElementById("hideSlider");
         let right = document.getElementById("toggleSliderResponsive");
